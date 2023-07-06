@@ -2,7 +2,7 @@
 import { loginValidData } from '../../Login/login-with-valid-data'
 
 describe('My Money Map', () => {
-    it('Money Map', () => {
+    it('Verify user can access my money map page', () => {
         cy.MoneyMap()
     });
 

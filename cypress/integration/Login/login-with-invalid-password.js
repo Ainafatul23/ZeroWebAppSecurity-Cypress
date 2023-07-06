@@ -1,13 +1,13 @@
 /// <reference types="cypress" />
 
-describe('Invalid Password Login', () => {
+describe('Login', () => {
 
     it('Visit Url', () => {
         cy.visit('http://zero.webappsecurity.com')
         cy.get('div').should('contain', 'Home')
     });
 
-    it('login with invalid username', () => {
+    it('Verify user cant input invalid password', () => {
         cy.get('#signin_button').click()
         cy.url().should('include','login.html')
 

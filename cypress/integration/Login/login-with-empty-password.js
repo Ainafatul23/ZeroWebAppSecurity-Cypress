@@ -1,13 +1,13 @@
 /// <reference types="cypress" />
 
-describe('Empty Password Login', () => {
+describe('Login', () => {
 
     it('Visit Url', () => {
         cy.visit('http://zero.webappsecurity.com')
         cy.get('div').should('contain', 'Home')
     });
 
-    it('login', () => {
+    it('Verify user cant leaving password field empty', () => {
         cy.get('#signin_button').click()
         cy.url().should('include','login.html')
 

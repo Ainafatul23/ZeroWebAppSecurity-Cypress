@@ -6,7 +6,7 @@ describe('Search', () => {
         cy.get('div').should('contain', 'Home')
     });
 
-    it('Search', () => {
+    it('Verify that the search function returns relevant results', () => {
         cy.fixture("search").then(key => {
             const keyword = key.keyword
 

@@ -3,7 +3,7 @@ import { loginValidData } from '../../Login/login-with-valid-data'
 
 
 describe('Account Summary', () => {
-    it('Account Summary', () => {
+    it('Verify user can access account summary page', () => {
         cy.AccountSummary()
     });
 

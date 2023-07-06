@@ -1,12 +1,12 @@
 import { loginValidData } from '../../Login/login-with-valid-data'
 
 
-describe('Verify user can make pay saved payee with valid data', () => {
+describe('Pay Bills - Pay Saved Payee', () => {
     it('Visit menu', () => {
         cy.Visit_Pay_Bills()
     });
 
-    it('Input valid data with saved validation',() => {
+    it('Verify user can make payment',() => {
         cy.fixture('pay-bills').then(pay => {
             const payee = pay.payee
             const account = pay.sp_account

@@ -2,7 +2,7 @@
 const loginValidData = require('../Login/login-with-valid-data')
 
 describe('Settings-Help', () => {
-    it('Help', () => {
+    it('Verify user can access help page', () => {
         cy.Help()
     });
 

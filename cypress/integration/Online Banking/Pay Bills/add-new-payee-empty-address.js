@@ -6,14 +6,13 @@ describe('Pay Bills - Add New Payee', () => {
         cy.Visit_Pay_Bills()
     });
 
-    it('Verify user can add new payee',() => {
+    it('Verify user cant add new payee when leaving  payee address field empty',() => {
         cy.fixture('pay-bills').then(pay => {
             const payee_name = pay.payee_name
-            const payee_address = pay.payee_address
             const account = pay.account
             const payee_details = pay.description
 
-            cy.Add_New_Payee(payee_name,payee_address,account,payee_details)
+            cy.EmptyAddress_Add_New_Payee(payee_name,account,payee_details)
         })
     })
 })

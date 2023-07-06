@@ -1,0 +1,10 @@
+{
+    "description" : "ONLINE TRANSFER",
+    "datesfrom" : "2012-09-01",
+    "datesto" : "2012-09-05",
+    "amountfrom" : "900",
+    "amountto" : "990",
+    "type1" : "Any",
+    "type2" : "Deposit",
+    "type3" : "Withdrawal"
+}

@@ -144,16 +144,136 @@ Cypress.Commands.add('AccountActivity_ShowTrans', () => {
 
 })
 
-Cypress.Commands.add('AccountActivity_FindTrans', () => {
-    cy.get('a').should('contain','Find Transactions').click()
+Cypress.Commands.add('AccountActivity_FindTrans', (description,datesfrom,datesto,amountfrom,amountto,type1) => {
+    cy.get('a').contains('Find Transactions').click()
+    cy.get('h2').should('contain','Find Transactions')
 
+    cy.get('#aa_description').clear()
+    cy.get('#aa_description').type(description)
+
+    cy.get('#aa_fromDate').clear()
+    cy.get('#aa_fromDate').type(datesfrom+'{enter}')
+
+    cy.get('#aa_toDate').clear()
+    cy.get('#aa_toDate').type(datesto+'{enter}')
+
+    cy.get('#aa_fromAmount').clear()
+    cy.get('#aa_fromAmount').type(amountfrom)
+
+    cy.get('#aa_toAmount').clear()
+    cy.get('#aa_toAmount').type(amountto)
+
+    cy.get('#aa_type').select(type1)
+
+    cy.get('button.btn.btn-primary').contains('Find').click()
+
+    cy.wait(5000)
+    cy.get('td').should(($td) => {
+        const tdContent = $td.text();
+        expect(tdContent).to.include(description);
+      })
+    cy.get('table tbody tr td:nth-child(3)').should(($td) => {
+        const depositValue = parseInt($td.text().trim(), 10);
+        expect(depositValue).to.be.within(Number(amountfrom), Number(amountto));
+    })
+})
+
+Cypress.Commands.add('AccountActivity_FindTrans_Description', (description) => {
+    cy.get('a').contains('Find Transactions').click()
+    cy.get('h2').should('contain','Find Transactions')
+
+    cy.get('#aa_description').clear()
+    cy.get('#aa_description').type(description)
+
+    cy.get('#aa_fromAmount').clear()
+    cy.get('#aa_toAmount').clear()
+
+    cy.get('button.btn.btn-primary').contains('Find').click()
+    cy.wait(5000)
+    cy.get('td').should(($td) => {
+        const tdContent = $td.text();
+        expect(tdContent).to.include(description);
+      })
+})
+
+Cypress.Commands.add('AccountActivity_FindTrans_Dates', (datesfrom,datesto) => {
+    cy.get('a').contains('Find Transactions').click()
+    cy.get('h2').should('contain','Find Transactions')
+
+    cy.get('#aa_description').clear()
+
+    cy.get('#aa_fromDate').clear()
+    cy.get('#aa_fromDate').type(datesfrom+'{enter}')
+
+    cy.get('#aa_toDate').clear()
+    cy.get('#aa_toDate').type(datesto+'{enter}')
+
+    cy.get('#aa_fromAmount').clear()
+    cy.get('#aa_toAmount').clear()
+
+    cy.get('button.btn.btn-primary').contains('Find').click()
+    cy.get('td').should(($td) => {
+        const tdContent = $td.text();
+        expect(tdContent).to.include(datesfrom);
+      })
+      cy.get('td').should(($td) => {
+        const tdContent = $td.text();
+        expect(tdContent).to.include(datesto);
+      })
 
 })
 
-Cypress.Commands.add('AccountActivity_FindTrans_NoInput', () => {
-    cy.get('a').should('contain','Find Transactions').click()
+Cypress.Commands.add('AccountActivity_FindTrans_Amount', (amountfrom,amountto) => {
+    cy.get('a').contains('Find Transactions').click()
+    cy.get('h2').should('contain','Find Transactions')
 
+    cy.get('#aa_description').clear()
 
+    cy.get('#aa_fromAmount').clear()
+    cy.get('#aa_fromAmount').type(amountfrom)
+
+    cy.get('#aa_toAmount').clear()
+    cy.get('#aa_toAmount').type(amountto)
+
+    cy.get('button.btn.btn-primary').contains('Find').click()
+   
+    cy.get('table tbody tr td:nth-child(3)').should(($td) => {
+        const depositValue = parseInt($td.text().trim(), 10);
+        expect(depositValue).to.be.within(Number(amountfrom), Number(amountto));
+    })
+})
+
+Cypress.Commands.add('AccountActivity_FindTrans_Type', (type1,type2,type3) => {
+    cy.get('a').contains('Find Transactions').click()
+    cy.get('h2').should('contain','Find Transactions')
+
+    cy.get('#aa_description').clear()
+
+    cy.get('#aa_fromAmount').clear()
+    cy.get('#aa_toAmount').clear()
+
+    //Any
+    cy.get('#aa_type').select(type1)
+    cy.get('button.btn.btn-primary').contains('Find').click()
+    cy.get('td').should('contain','2012-09-06')
+    cy.get('td').should('contain','2012-09-05')
+    cy.get('td').should('contain','2012-09-01')
+    
+    //Deposit
+    cy.get('#aa_type').select(type2)
+    cy.get('button.btn.btn-primary').contains('Find').click()
+    cy.get('table tbody tr td:nth-child(3)').should(($td) => {
+        const depositValue = $td.text().trim();
+        expect(depositValue).to.not.be.empty;
+      })
+    
+    //Withdraw
+    cy.get('#aa_type').select(type3)
+    cy.get('button.btn.btn-primary').contains('Find').click()
+    cy.get('table tbody tr td:nth-child(4)').should(($td) => {
+        const withdrawalValue = $td.text().trim();
+        expect(withdrawalValue).to.not.be.empty;
+      })
 })
 
 Cypress.Commands.add('EmptyAmount_TransferFunds',(description
@@ -431,6 +551,96 @@ Cypress.Commands.add('Add_New_Payee', (payee_name,payee_address,account,payee_de
 
     cy.get('#np_new_payee_details').clear()
     cy.get('#np_new_payee_details').type(payee_details)
+
+    cy.get('#add_new_payee').click()
+    cy.wait(3000)
+    cy.get('@nameText').then((nameText) => {
+        cy.get('div#alert_content')
+          .invoke('text')
+          .should('include', nameText);
+      });
+})
+
+Cypress.Commands.add('EmptyName_Add_New_Payee',(payee_address,account,payee_details) => {
+    cy.get('a').contains('Add New Payee').click()
+    cy.get('h2').should('contain','Who are you paying?')
+
+    cy.get('#np_new_payee_name').clear()
+
+    cy.get('#np_new_payee_address').clear()
+    cy.get('#np_new_payee_address').type(payee_address)
+
+    cy.get('#np_new_payee_account').clear()
+    cy.get('#np_new_payee_account').type(account)
+
+    cy.get('#np_new_payee_details').clear()
+    cy.get('#np_new_payee_details').type(payee_details)
+
+    cy.get('#add_new_payee').click()
+    cy.wait(3000)
+
+    cy.get('h2').should('contain','Who are you paying?')
+})
+
+Cypress.Commands.add('EmptyAddress_Add_New_Payee',(payee_name,account,payee_details) => {
+    cy.get('a').contains('Add New Payee').click()
+    cy.get('h2').should('contain','Who are you paying?')
+
+    cy.get('#np_new_payee_name').clear()
+    cy.get('#np_new_payee_name').type(payee_name)
+
+    cy.get('#np_new_payee_address').clear()
+
+    cy.get('#np_new_payee_account').clear()
+    cy.get('#np_new_payee_account').type(account)
+
+    cy.get('#np_new_payee_details').clear()
+    cy.get('#np_new_payee_details').type(payee_details)
+
+    cy.get('#add_new_payee').click()
+    cy.wait(3000)
+
+    cy.get('h2').should('contain','Who are you paying?')
+})
+
+Cypress.Commands.add('EmptyAccount_Add_New_Payee',(payee_name,payee_address,payee_details) => {
+    cy.get('a').contains('Add New Payee').click()
+    cy.get('h2').should('contain','Who are you paying?')
+
+    cy.get('#np_new_payee_name').clear()
+    cy.get('#np_new_payee_name').type(payee_name)
+
+    cy.get('#np_new_payee_address').clear()
+    cy.get('#np_new_payee_address').type(payee_address)
+
+    cy.get('#np_new_payee_account').clear()
+
+    cy.get('#np_new_payee_details').clear()
+    cy.get('#np_new_payee_details').type(payee_details)
+
+    cy.get('#add_new_payee').click()
+    cy.wait(3000)
+
+    cy.get('h2').should('contain','Who are you paying?')
+})
+
+Cypress.Commands.add('EmptyDetails_Add_New_Payee', (payee_name,payee_address,account) => {
+    cy.get('a').contains('Add New Payee').click()
+    cy.get('h2').should('contain','Who are you paying?')
+
+    cy.get('#np_new_payee_name').clear()
+    cy.get('#np_new_payee_name').type(payee_name)
+    .invoke('val').then((nameText) => {
+        cy.wrap(nameText).as('nameText') 
+      }) 
+
+    cy.get('#np_new_payee_address').clear()
+    cy.get('#np_new_payee_address').type(payee_address)
+
+    cy.get('#np_new_payee_account').clear()
+    cy.get('#np_new_payee_account').type(account)
+
+    cy.get('#np_new_payee_details').clear()
 
     cy.get('#add_new_payee').click()
     cy.wait(3000)
